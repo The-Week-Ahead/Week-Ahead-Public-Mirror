@@ -22,7 +22,10 @@ The timetable is stored in a JSON file, and it uses service workers to cache the
 - Run 'python main.py' to start the server
 - Done!
 
+# CONTRIBUTIONS
+
 Any suggestions or improvements are welcome. Feel free to open an issue or a pull request.
+Any and all things you committ and help with will also be added to a credits page on the official website.
 
 
 You are free to use the code in this repostiory without permission. If you wish, do give credit to this repository.
