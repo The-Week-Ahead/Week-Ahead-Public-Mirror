@@ -2,7 +2,7 @@
 
 The 'Week Ahead' is a simple website that displays the timetable of the school.
 It is designed to be simple and as easy to use as possible.
-The timetable is stored in a JSON file and returned, and it uses service workers to cache the timetable for offline use, and acheive PWA abilities (Progressive Web Apps).
+The timetable is stored in a JSON file, and it uses service workers to cache the timetable for offline use, and to also acheive PWA abilities (Progressive Web Apps).
 
 # PUBLIC TODO
 
