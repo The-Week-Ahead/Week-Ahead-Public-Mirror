@@ -1,0 +1,330 @@
+:root {
+    --background-color: #f0f0f0;
+    --container-bg-color: #ffffff;
+    --text-color: #333333;
+    --button-bg-color: #cccccc;
+    --button-text-color: #ffffff;
+    --button-hover-bg-color: #bbbbbb;
+    --header-color: #333333;
+    --subheader-color: #333333;
+    --table-header-bg-color: #f2f2f2;
+    --table-row-even-bg-color: #f9f9f9;
+    --refresh-button-bg-color: #007bff;
+    --refresh-button-hover-bg-color: #0056b3;
+}
+
+body.dark-mode {
+    --background-color: #121212;
+    --container-bg-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --button-bg-color: #333333;
+    --button-text-color: #e0e0e0;
+    --button-hover-bg-color: #444444;
+    --header-color: #e0e0e0;
+    --subheader-color: #e0e0e0;
+    --table-header-bg-color: #2c2c2c;
+    --table-row-even-bg-color: #1e1e1e;
+    --refresh-button-bg-color: #0056b3;
+    --refresh-button-hover-bg-color: #003f7f;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 21.8px;
+}
+
+.container {
+    background-color: var(--container-bg-color);
+    border-radius: 16px;
+    box-shadow: 0 0 29px rgba(0, 0, 0, 0.1);
+    padding: 42px;
+    max-width: 1180px;
+    width: 95%;
+}
+
+.add-to-calendar-btn {
+    font-size: 0.8rem;
+    padding: 3px 6px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-to-calendar-btn:hover {
+    background-color: #3367d6;
+}
+
+h1,
+h2 {
+    text-align: center;
+    color: var(--header-color);
+}
+
+h1 {
+    font-size: 32.2px;
+    margin-bottom: 29px;
+}
+
+h2 {
+    font-size: 26.8px;
+    margin-top: 42px;
+    margin-bottom: 21.5px;
+}
+
+.controls,
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 29px;
+}
+
+.control-group {
+    display: flex;
+    gap: 7.5px;
+}
+
+button {
+    font-family: inherit;
+    font-size: 20.2px;
+    padding: 16px 21.5px;
+    border: none;
+    border-radius: 7.5px;
+    cursor: pointer;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    transition:
+        background-color 0.3s,
+        transform 0.1s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    button:hover {
+        transform: translateY(-2.9px);
+        background-color: var(--button-hover-bg-color);
+    }
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.left_arrow_btn,
+.right_arrow_btn {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+}
+
+#daytext,
+#gradetext,
+#housetext {
+    min-width: 186px;
+}
+
+.toggle {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    transition:
+        background-color 0.3s,
+        color 0.3s;
+}
+
+.toggle.selected {
+    color: #fff;
+}
+
+#Society\ Events.selected {
+    background-color: #2e7d32;
+}
+
+#Academics.selected {
+    background-color: #c62828;
+}
+
+#Sports.selected {
+    background-color: #0277bd;
+}
+
+#Misc.selected {
+    background-color: #ff8f00;
+}
+
+#All_t.selected {
+    background-color: #3e3546;
+}
+
+#All_t {
+    background-color: #3e3546;
+    color: #fff;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 31px;
+}
+
+th,
+td {
+    border: 1.6px solid #ddd;
+    padding: 18.9px;
+    text-align: left;
+    color: var(--text-color);
+}
+
+th {
+    background-color: var(--table-header-bg-color);
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: var(--table-row-even-bg-color);
+}
+
+#refresh-button {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: var(--refresh-button-bg-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+#refresh-button:hover {
+    background-color: var(--refresh-button-hover-bg-color);
+}
+
+@media (max-width: 600px) {
+    body {
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+    }
+    .container {
+        width: 100vw;
+        padding: 0;
+        border-radius: 0;
+        box-sizing: border-box;
+        transform: none;
+        margin: 0;
+    }
+    .table-container {
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    table {
+        width: 100%;
+        font-size: 16px;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+    }
+    th,
+    td {
+        padding: 4px 6px;
+        word-wrap: break-word;
+    }
+    tr {
+        margin-bottom: 2px;
+    }
+    button {
+        font-size: 18.9px;
+        padding: 12.4px 18.6px;
+        touch-action: manipulation;
+    }
+
+    button:hover,
+    button:active {
+        transform: none;
+    }
+    #daytext,
+    #gradetext,
+    #housetext {
+        min-width: 140px;
+    }
+    #refresh-button {
+        display: flex;
+    }
+}
+
+body.dark-mode {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+body.dark-mode .container {
+    background-color: var(--container-bg-color);
+    box-shadow: 0 0 29px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode h1,
+body.dark-mode h2 {
+    color: var(--header-color);
+}
+
+body.dark-mode button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+}
+
+body.dark-mode button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+body.dark-mode .toggle.selected {
+    color: #fff;
+}
+
+body.dark-mode th,
+body.dark-mode td {
+    color: var(--text-color);
+}
+
+body.dark-mode th {
+    background-color: var(--table-header-bg-color);
+}
+
+body.dark-mode tr:nth-child(even) {
+    background-color: var(--table-row-even-bg-color);
+}
+
+body.dark-mode #refresh-button {
+    background-color: var(--refresh-button-bg-color);
+}
+
+body.dark-mode #refresh-button:hover {
+    background-color: var(--refresh-button-hover-bg-color);
+}

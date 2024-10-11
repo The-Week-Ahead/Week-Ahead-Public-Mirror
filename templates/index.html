@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>The Students' Week Ahead</title>
+        <link rel="manifest" href="/week-ahead/static/site.webmanifest" />
+        <link
+            rel="stylesheet"
+            href="/week-ahead/static/css/styles.css?v={{ version }}"
+        />
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/week-ahead/static/favicon.ico"
+        />
+    </head>
+    <body onload="load()">
+        <div class="container">
+            <div class="theme-toggle">
+                <button id="theme-toggle-button" aria-label="Toggle Dark Mode">
+                    🌓
+                </button>
+            </div>
+
+            <h1>The Students' Week Ahead</h1>
+
+            <div class="controls">
+                <div class="control-group">
+                    <button
+                        id="day_lb"
+                        class="left_arrow_btn"
+                        onclick="Shift_Day(-1)"
+                    >
+                        &lt;
+                    </button>
+                    <button id="daytext">All</button>
+                    <button
+                        id="day_rb"
+                        class="right_arrow_btn"
+                        onclick="Shift_Day(1)"
+                    >
+                        &gt;
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <button
+                        id="grade_lb"
+                        class="left_arrow_btn"
+                        onclick="Shift_Grade(-1)"
+                    >
+                        &lt;
+                    </button>
+                    <button id="gradetext">All Grades</button>
+                    <button
+                        id="grade_rb"
+                        class="right_arrow_btn"
+                        onclick="Shift_Grade(1)"
+                    >
+                        &gt;
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <button
+                        id="house_lb"
+                        class="left_arrow_btn"
+                        onclick="Shift_House(-1)"
+                    >
+                        &lt;
+                    </button>
+                    <button id="housetext">All Houses</button>
+                    <button
+                        id="house_rb"
+                        class="right_arrow_btn"
+                        onclick="Shift_House(1)"
+                    >
+                        &gt;
+                    </button>
+                </div>
+            </div>
+
+            <h2>Filters (Click to turn on/off)</h2>
+
+            <div class="filters">
+                <button id="All_t" class="toggle" onclick="Toggle(4)">
+                    All Toggles
+                </button>
+                <button id="Academics" class="toggle" onclick="Toggle(1)">
+                    Academics
+                </button>
+                <button id="Society Events" class="toggle" onclick="Toggle(0)">
+                    Society Events
+                </button>
+                <button id="Sports" class="toggle" onclick="Toggle(2)">
+                    Sports
+                </button>
+                <button id="Misc" class="toggle" onclick="Toggle(3)">
+                    Misc.
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead id="table-head"></thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <button id="refresh-button" onclick="location.reload()">
+            <span style="display: inline-block; transform: translateY(-1px)"
+                >↻</span
+            >
+        </button>
+        <script>
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker
+                        .register("/week-ahead/static/js/worker.min.js", {
+                            scope: "/",
+                        })
+                        .then((registration) => {
+                            console.log(
+                                "Service Worker registered with scope:",
+                                registration.scope,
+                            );
+
+                            registration.onupdatefound = () => {
+                                const installingWorker =
+                                    registration.installing;
+                                installingWorker.onstatechange = () => {
+                                    if (
+                                        installingWorker.state ===
+                                            "installed" &&
+                                        navigator.serviceWorker.controller
+                                    ) {
+                                        window.location.reload();
+                                    }
+                                };
+                            };
+                        })
+                        .catch((error) => {
+                            console.error(
+                                "Service Worker registration failed:",
+                                error,
+                            );
+                        });
+                });
+            } else {
+                console.error(
+                    "Service Workers are not supported in this browser.",
+                );
+            }
+        </script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.9/dist/add-to-homescreen.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.9/dist/add-to-homescreen.min.js"></script>
+        <script src="/week-ahead/static/js/script.min.js?v={{ version }}"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                if (window.matchMedia("(display-mode: standalone)").matches) {
+                    if (localStorage.getItem("hasCodeRunBefore") === null) {
+                        localStorage.setItem("hasCodeRunBefore", true);
+                    }
+                } else {
+                    window.AddToHomeScreenInstance = new window.AddToHomeScreen(
+                        {
+                            appName: "The Week Ahead",
+                            appIconUrl: "apple-touch-icon.png",
+                            assetUrl:
+                                "https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@1.9/dist/assets/img/",
+                            maxModalDisplayCount: 2,
+                        },
+                    );
+
+                    ret = window.AddToHomeScreenInstance.show("en");
+                }
+            });
+        </script>
+        <script>
+            function sendMessageToSW(message) {
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage(message);
+                } else {
+                    console.error(
+                        "no active service worker controller to send the message",
+                    );
+                }
+            }
+
+            navigator.serviceWorker.addEventListener("message", (event) => {
+                if (event.data && event.data.type === "TIMETABLE_UPDATED") {
+                    console.log(
+                        "service worker has updated the timetable cache, reload page",
+                    );
+                    window.location.reload();
+                }
+            });
+
+            async function fetchData(url) {
+                const response = await fetch(url, { cache: "no-cache" });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+
+            function isDataChanged(oldData, newData) {
+                return JSON.stringify(oldData) !== JSON.stringify(newData);
+            }
+
+            async function handleVisibilityChange() {
+                if (document.visibilityState === "visible") {
+                    if (navigator.onLine) {
+                        try {
+                            if ("serviceWorker" in navigator) {
+                                const registration =
+                                    await navigator.serviceWorker.getRegistration(
+                                        "/week-ahead/static/js/worker.min.js",
+                                    );
+
+                                if (registration) {
+                                    registration.onupdatefound = () => {
+                                        const installingWorker =
+                                            registration.installing;
+                                        if (installingWorker) {
+                                            installingWorker.onstatechange =
+                                                () => {
+                                                    if (
+                                                        installingWorker.state ===
+                                                        "installed"
+                                                    ) {
+                                                        if (
+                                                            navigator
+                                                                .serviceWorker
+                                                                .controller
+                                                        ) {
+                                                            console.log(
+                                                                "new service worker found, reload page",
+                                                            );
+                                                            window.location.reload();
+                                                        } else {
+                                                            console.log(
+                                                                "service worker installed for the first time",
+                                                            );
+                                                        }
+                                                    }
+                                                };
+                                        }
+                                    };
+                                    await registration.update();
+                                }
+                            }
+                            const latestData = await fetchData(
+                                "/week-ahead/static/data/timetable.json",
+                            );
+                            const storedData =
+                                localStorage.getItem("timetableData");
+                            if (storedData) {
+                                const parsedStoredData = JSON.parse(storedData);
+                                if (
+                                    isDataChanged(parsedStoredData, latestData)
+                                ) {
+                                    console.log(
+                                        "data has changed, updating cache and reloading the page",
+                                    );
+
+                                    sendMessageToSW({
+                                        type: "UPDATE_TIMETABLE_CACHE",
+                                    });
+
+                                    localStorage.setItem(
+                                        "timetableData",
+                                        JSON.stringify(latestData),
+                                    );
+                                } else {
+                                    console.log("data is up to date");
+                                }
+                            } else {
+                                localStorage.setItem(
+                                    "timetableData",
+                                    JSON.stringify(latestData),
+                                );
+                                console.log("stored initial data");
+                            }
+                        } catch (error) {
+                            console.error(
+                                "Error checking for data updates:",
+                                error,
+                            );
+                        }
+                    } else {
+                        console.log(
+                            "device is offline, skipping data update check",
+                        );
+                    }
+                }
+            }
+
+            async function initializeData() {
+                if (navigator.onLine) {
+                    try {
+                        const data = await fetchData(
+                            "/week-ahead/static/data/timetable.json",
+                        );
+                        localStorage.setItem(
+                            "timetableData",
+                            JSON.stringify(data),
+                        );
+                        console.log("initial data stored");
+                    } catch (error) {
+                        console.error("Error fetching initial data:", error);
+                    }
+                }
+            }
+
+            document.addEventListener(
+                "visibilitychange",
+                handleVisibilityChange,
+            );
+            window.addEventListener("load", initializeData);
+        </script>
+
+        <script>
+            function applyTheme(theme) {
+                if (theme === "dark") {
+                    document.body.classList.add("dark-mode");
+                } else {
+                    document.body.classList.remove("dark-mode");
+                }
+            }
+
+            function toggleTheme() {
+                let currentTheme = localStorage.getItem("theme");
+                if (currentTheme === "dark") {
+                    applyTheme("light");
+                    localStorage.setItem("theme", "light");
+                } else {
+                    applyTheme("dark");
+                    localStorage.setItem("theme", "dark");
+                }
+            }
+
+            document
+                .getElementById("theme-toggle-button")
+                .addEventListener("click", toggleTheme);
+
+            function initializeTheme() {
+                const storedTheme = localStorage.getItem("theme");
+                if (storedTheme) {
+                    applyTheme(storedTheme);
+                } else {
+                    const prefersDark = window.matchMedia(
+                        "(prefers-color-scheme: dark)",
+                    ).matches;
+                    applyTheme(prefersDark ? "dark" : "light");
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", initializeTheme);
+        </script>
+    </body>
+</html>

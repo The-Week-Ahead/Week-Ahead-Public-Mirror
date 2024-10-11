@@ -1,0 +1,17 @@
+{
+    "short_name": "The Week Ahead",
+    "name": "Easily view the week ahead for KGS!",
+    "display": "standalone",
+    "id": "/week-ahead?source=pwa",
+    "start_url": "/week-ahead?source=pwa",
+    "scope": "/week-ahead?source=pwa",
+    "icons": [
+        {
+            "src": "apple-touch-icon.png",
+            "sizes": "any",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+  }
+  
